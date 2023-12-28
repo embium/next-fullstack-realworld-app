@@ -4,6 +4,7 @@ import { getComments } from '@/actions/getComments'
 import { prisma } from '@/libs/prisma'
 import getCurrentUser from '@/actions/getCurrentUser'
 import { userMapper } from '@/app/api/mapper'
+import { commentSchema } from '@/validation/schema'
 
 interface IParams {
   slug: string
@@ -23,17 +24,25 @@ export const POST = async (
 ) => {
   const body = await req.json()
   const currentUser = await getCurrentUser()
+
   if (!currentUser) {
     return ApiResponse.unauthorized()
   }
+
   const article = await prisma.article.findUnique({
     where: { slug: params.slug },
     include: {
       author: true,
     },
   })
+
   if (!article) {
     return ApiResponse.notFound('Article not exists')
+  }
+
+  const result = commentSchema.safeParse(body)
+  if (!result.success) {
+    return ApiResponse.badRequest(result.error)
   }
 
   const data = await prisma.comment.create({

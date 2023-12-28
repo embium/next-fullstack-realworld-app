@@ -23,7 +23,7 @@ export const DELETE = async (
   })
 
   if (!article) {
-    return ApiResponse.notFound("Article doesn't exists")
+    return ApiResponse.notFound("Article doesn't exist")
   }
 
   if (article.authorId !== currentUser.id) {
@@ -57,7 +57,7 @@ export const PUT = async (
   })
 
   if (!article) {
-    return ApiResponse.notFound("Article doesn't exists")
+    return ApiResponse.notFound("Article doesn't exist")
   }
 
   if (article.authorId !== currentUser.id) {
@@ -75,7 +75,6 @@ export const PUT = async (
     body: articleBody,
     tagList = [],
   } = result.data
-
   try {
     const updatedArticle = await prisma.article.update({
       where: {
@@ -85,7 +84,7 @@ export const PUT = async (
         title,
         description,
         body: articleBody,
-        slug: slug(title),
+        slug: article.slug,
         tagList: {
           deleteMany: { articleId: article.id },
           create: tagList?.map((tag) => ({

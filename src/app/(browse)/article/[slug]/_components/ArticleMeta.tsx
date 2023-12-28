@@ -25,9 +25,11 @@ const ArticleMeta = () => {
     if (!window.confirm('Are you sure you wish to delete the article?')) {
       return
     }
-
-    await fetchWrapper(`/articles/${article.slug}`, 'DELETE')
-    router.push('/')
+    try {
+      await fetchWrapper(`/articles/${article.slug}`, 'DELETE')
+    } finally {
+      router.push('/')
+    }
   }
 
   return (
@@ -42,7 +44,7 @@ const ArticleMeta = () => {
         />
       </Link>
       <div className="info">
-        <Link href={`/@${article.author.username}`} className="author">
+        <Link href={`/profile/@${article.author.username}`} className="author">
           {article.author.username}
         </Link>
         <span className="date">{formatTime(article.updatedAt)}</span>
@@ -66,18 +68,8 @@ const ArticleMeta = () => {
         </span>
       ) : (
         <span>
-          <FollowButton
-            author={article.author.username}
-            following={article.author.following}
-            className={'mr-1'}
-            onChange={(profile) => setArticle({ ...article, author: profile })}
-          />
-          <FavoriteButton
-            article={article}
-            text="Favorite Article"
-            className="btn btn-sm"
-            onChange={setArticle}
-          />
+          <FollowButton author={article.author.username} className={'mr-1'} />
+          <FavoriteButton className="btn btn-sm" />
         </span>
       )}
     </div>

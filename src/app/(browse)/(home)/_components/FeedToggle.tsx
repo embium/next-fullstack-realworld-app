@@ -11,7 +11,7 @@ interface FeedToggleProps {
   user: CurrentUser | null
 }
 
-const FeedToggle = async ({ feed, tag, user }: FeedToggleProps) => {
+const FeedToggle = ({ feed, tag, user }: FeedToggleProps) => {
   return (
     <div className="feed-toggle">
       <ul className="nav nav-pills outline-active">
@@ -28,7 +28,7 @@ const FeedToggle = async ({ feed, tag, user }: FeedToggleProps) => {
         <li className="nav-item">
           <QueryLink
             query={{ feed: 'global' }}
-            className={clsx('nav-link', feed !== 'feed' && 'active')}
+            className={clsx('nav-link', feed !== 'feed' && !tag && 'active')}
           >
             Global Feed
           </QueryLink>
@@ -37,7 +37,7 @@ const FeedToggle = async ({ feed, tag, user }: FeedToggleProps) => {
           {tag && (
             <Link
               href={{ pathname: '/', query: { tag } }}
-              className="nav-link active"
+              className={'nav-link active'}
             >
               # {tag}
             </Link>

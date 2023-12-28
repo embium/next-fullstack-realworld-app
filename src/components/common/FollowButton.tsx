@@ -1,26 +1,29 @@
 'use client'
 
-import { Profile, ProfileResp } from '@/types/response'
+import { ProfileResp } from '@/types/response'
 import { fetchWrapper } from '@/utils/fetch'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import clsx from 'clsx'
+import { useAuth } from '@/components/common/AuthProvider'
+import { useFollow } from './FollowProvider'
+import { useState } from 'react'
 
 interface FollowButtonProps {
   author: string
-  following?: boolean
   className?: string
-  onChange?: (profile: Profile) => void
 }
 
-const FollowButton = ({
-  author,
-  following,
-  className,
-  onChange,
-}: FollowButtonProps) => {
+const FollowButton = ({ author, className }: FollowButtonProps) => {
+  const router = useRouter()
+  const { currentUser } = useAuth()
   const [loading, setLoading] = useState(false)
+  const { following, setFollowing } = useFollow()
 
-  const handleFavorites = async () => {
+  const handleFollowing = async () => {
+    if (!currentUser) {
+      router.push('/login')
+    }
+
     setLoading(true)
     try {
       const data = following
@@ -29,9 +32,8 @@ const FollowButton = ({
             'DELETE',
           )
         : await fetchWrapper<ProfileResp>(`/profiles/${author}/follow`, 'POST')
-
       if (data) {
-        onChange && onChange(data.profile)
+        setFollowing(data.profile.following)
       }
     } finally {
       setLoading(false)
@@ -40,7 +42,7 @@ const FollowButton = ({
 
   return (
     <button
-      onClick={handleFavorites}
+      onClick={handleFollowing}
       disabled={loading}
       className={clsx(
         className || '',

@@ -29,7 +29,7 @@ async function homeMiddleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-const requireAuth = ['/profile', '/editor', '/settings']
+const requireAuth = ['/editor', '/settings']
 
 async function authMiddleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
@@ -37,7 +37,7 @@ async function authMiddleware(request: NextRequest) {
     const token = await getToken({ req: request })
     if (!token) {
       const url = new URL(`/login`, request.url)
-      return NextResponse.redirect(url)
+      return NextResponse.redirect(`${url}?callback=${pathname}`)
     }
   }
   return NextResponse.next()

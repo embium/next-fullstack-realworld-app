@@ -2,7 +2,15 @@ import { prisma } from '@/libs/prisma'
 import QueryLink from '@/components/common/QueryLink'
 
 const PopularTags = async () => {
-  const tags = await prisma.tag.findMany()
+  const tags = await prisma.tag.findMany({
+    where: { articles: { some: { NOT: [] } } },
+    select: {
+      articles: true,
+      name: true,
+      id: true,
+    },
+  })
+
   return (
     <div className="sidebar">
       <p>Popular Tags</p>

@@ -4,6 +4,7 @@ import ListErrors from '@/components/common/ListErrors'
 import React, { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { fetchWrapper } from '@/utils/fetch'
+import { useSearchParams } from 'next/navigation'
 
 interface SignFormProps {
   isRegister?: boolean
@@ -16,6 +17,9 @@ interface UserForm {
 }
 
 const SignForm = ({ isRegister }: SignFormProps) => {
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callback')
+
   const [user, setUser] = useState<UserForm>({
     username: '',
     email: '',
@@ -30,11 +34,17 @@ const SignForm = ({ isRegister }: SignFormProps) => {
   }
 
   const handleSignIn = async () => {
-    await signIn('credentials', {
+    const res = await signIn('credentials', {
       email: user.email,
       password: user.password,
-      callbackUrl: '/',
+      redirect: false,
+      callbackUrl: callbackUrl ? callbackUrl : '/',
     })
+    if (res?.status == 200) {
+      window.location.href = '/'
+    } else {
+      setErrors(['Error logging in'])
+    }
   }
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

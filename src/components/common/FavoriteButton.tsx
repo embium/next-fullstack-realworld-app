@@ -4,24 +4,30 @@ import { ArticleItem } from '@/types/response'
 import { fetchWrapper } from '@/utils/fetch'
 import { useState } from 'react'
 import clsx from 'clsx'
+import { useAuth } from '@/components/common/AuthProvider'
+import { useRouter } from 'next/navigation'
+import { useArticle } from '../article/ArticleProvider'
 
 interface FavoriteButtonProps {
-  article: ArticleItem
   className?: string
-  text?: string
-  onChange?: (articleItem: ArticleItem) => void
 }
 
-const FavoriteButton = ({
-  article,
-  className,
-  text,
-  onChange,
-}: FavoriteButtonProps) => {
-  const { favorited, favoritesCount, slug } = article
+const FavoriteButton = ({ className }: FavoriteButtonProps) => {
+  const { currentUser } = useAuth()
+  const { article, setArticle } = useArticle()
+  const { favorited, favoritesCount, slug } = {
+    favorited: article?.favorited,
+    favoritesCount: article?.favoritesCount,
+    slug: article?.slug,
+  }
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const handleFavorites = async () => {
+    if (!currentUser) {
+      router.push('/login')
+    }
+
     setLoading(true)
     try {
       const data = favorited
@@ -32,7 +38,7 @@ const FavoriteButton = ({
         : await fetchWrapper<ArticleItem>(`/articles/${slug}/favorite`, 'POST')
 
       if (data) {
-        onChange && onChange(data)
+        setArticle(data)
       }
     } finally {
       setLoading(false)
@@ -49,13 +55,8 @@ const FavoriteButton = ({
       )}
     >
       <i className="ion-heart"></i>
-      {text ? (
-        <>
-          &nbsp; {text} <span className="counter">({favoritesCount})</span>
-        </>
-      ) : (
-        <>&nbsp; {favoritesCount}</>
-      )}
+      &nbsp; {favorited ? 'Unfavorite' : 'Favorite'}{' '}
+      <span className="counter">({favoritesCount})</span>
     </button>
   )
 }
