@@ -44,12 +44,7 @@ const ArticlePreview = ({ article }: ArticlePreviewProps) => {
           {article.tagList.map((tag: string) => {
             return (
               <li className="tag-default tag-pill tag-outline" key={tag}>
-                <Link
-                  href={{ pathname: '/', query: { tag } }}
-                  className="nav-link active"
-                >
-                  {tag}
-                </Link>
+                {tag}
               </li>
             )
           })}

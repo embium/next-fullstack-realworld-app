@@ -35,14 +35,7 @@ const articlePage = async ({ params }: ArticleProps) => {
             <ul className="tag-list">
               {article.tagList.map((tag) => (
                 <li key={tag} className="tag-default tag-pill tag-outline">
-                  {tag && (
-                    <Link
-                      href={{ pathname: '/', query: { tag } }}
-                      className="nav-link active"
-                    >
-                      {tag}
-                    </Link>
-                  )}
+                  {tag}
                 </li>
               ))}
             </ul>
