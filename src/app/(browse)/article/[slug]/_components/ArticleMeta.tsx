@@ -11,7 +11,7 @@ import { fetchWrapper } from '@/utils/fetch'
 import { useArticle } from '@/components/article/ArticleProvider'
 
 const ArticleMeta = () => {
-  const { article, setArticle } = useArticle()
+  const { article } = useArticle()
   const { currentUser } = useAuth()
   const router = useRouter()
 

@@ -9,17 +9,17 @@ datasource db {
 }
 
 model User {
-  id         String      @id @default(uuid())
-  bio        String?
-  email      String      @unique
-  image      String?
-  password   String
-  username   String      @unique
-  favorites  Favorites[]
-  followedBy Follows[]   @relation("following")
-  following  Follows[]   @relation("follower")
-  comments   Comment[]
-  articles   Article[]
+  id                  String      @id @default(uuid())
+  bio                 String?
+  email               String      @unique
+  username            String      @unique
+  image               String?
+  password            String
+  favorites           Favorites[]
+  followedBy          Follows[]   @relation("following")
+  following           Follows[]   @relation("follower")
+  comments            Comment[]
+  articles            Article[]
 
   @@map("user")
 }

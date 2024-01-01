@@ -8,7 +8,6 @@ import ArticleMeta from './_components/ArticleMeta'
 import ArticleBody from './_components/ArticleBody'
 import ArticleComments from './_components/ArticleComments'
 import { ArticleItem } from '@/types/response'
-import Link from 'next/link'
 import { FollowProvider } from '@/components/common/FollowProvider'
 
 interface ArticleProps {
